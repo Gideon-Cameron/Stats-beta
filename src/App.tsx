@@ -1,76 +1,47 @@
-import iconWww from "./assets/icon-www.png";
-import iconGlobe from "./assets/icon-globe.png";
-import iconBe from "./assets/icon-be.png";
-import Ferniro from "./assets/Ferniro.png";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import StrengthStatPage from './pages/stats/strength';
 
-export default function App() {
+const App: React.FC = () => {
   return (
-    <main className="flex flex-col md:flex-row items-center justify-between min-h-screen bg-background text-white px-8 md:px-12 gap-y-8">
-      {/* Left Content Section */}
-      <div className="flex flex-col justify-center w-full md:w-2/5 pl-4 md:pl-8 space-y-6">
-        {/* Title */}
-        <h1 className="font-extrabold text-[80px] leading-tight tracking-normal text-gold font-poppins">
-          FURNITURE
-        </h1>
-        {/* Subtitle */}
-        <p className="font-medium text-[38px] leading-tight tracking-normal text-gold font-poppins">
-          Landing Page
-        </p>
-        {/* Description */}
-        <p className="text-black text-lg md:text-xl leading-relaxed max-w-lg">
-          The e-Commerce Website design template is easy to customize,
-          making it even easier for you to design your next website or 
-          project, and speed up your design workflow.
-        </p>
+    <Router>
+      <div className="min-h-screen bg-white text-gray-900">
+        <nav className="bg-blue-600 text-white px-6 py-4 shadow">
+          <div className="flex justify-between items-center max-w-5xl mx-auto">
+            <h1 className="text-xl font-bold">
+              <Link to="/">Stat Tracker</Link>
+            </h1>
+            <div className="space-x-4">
+              <Link to="/stats/strength" className="hover:underline">
+                Strength
+              </Link>
+              {/* Future nav items */}
+            </div>
+          </div>
+        </nav>
 
-        {/* Links Section (Smaller Text & Icons) */}
-        <div className="flex flex-col gap-2">
-          <a
-            href="https://uiuxexperts.github.io/portfolio/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-2"
-          >
-            <img src={iconWww} alt="Website Icon" className="w-7 h-7 md:w-9 md:h-9" />
-            <span className="text-black text-xs md:text-sm font-medium">
-              https://uiuxexperts.github.io/portfolio/
-            </span>
-          </a>
-
-          <a
-            href="https://dribbble.com/aashifasheikh12"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-2"
-          >
-            <img src={iconGlobe} alt="Website Icon" className="w-7 h-7 md:w-9 md:h-9" />
-            <span className="text-black text-xs md:text-sm font-medium">
-              aashifasheikh12
-            </span>
-          </a>
-
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center space-x-2"
-          >
-            <img src={iconBe} alt="Website Icon" className="w-7 h-7 md:w-9 md:h-9" />
-            <span className="text-black text-xs md:text-sm font-medium">
-              /aashifasheikh12
-            </span>
-          </a>
-        </div>
+        <main className="py-6 px-4">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/stats/strength" element={<StrengthStatPage />} />
+          </Routes>
+        </main>
       </div>
-
-      {/* Right Image Section (Full-Screen Fix) */}
-      <div className="relative w-full md:w-3/5 h-[60vh] md:h-screen overflow-hidden">
-        <img 
-          src={Ferniro} 
-          alt="Furniture Image" 
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      </div>
-    </main>
+    </Router>
   );
-}
+};
+
+const Home: React.FC = () => (
+  <div className="max-w-2xl mx-auto text-center mt-10">
+    <h2 className="text-3xl font-bold mb-4">Welcome to Stat Tracker</h2>
+    <p className="text-gray-700">Start by checking your strength stats.</p>
+    <Link
+      to="/stats/strength"
+      className="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+    >
+      Go to Strength Assessment
+    </Link>
+  </div>
+);
+
+export default App;
