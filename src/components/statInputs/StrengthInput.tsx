@@ -1,43 +1,61 @@
 import { useState } from 'react';
 
 export type StrengthFormData = {
-  benchPress: number;
-  squat: number;
-  deadlift: number;
-  overheadPress: number;
-  pullUps: number;
-  pushUps: number;
-  barHang: number;
-  plankHold: number;
+  benchPress: string;
+  squat: string;
+  deadlift: string;
+  overheadPress: string;
+  pullUps: string;
+  pushUps: string;
+  barHang: string;
+  plankHold: string;
 };
 
 type Props = {
-  onSubmit: (data: StrengthFormData) => void;
+  onSubmit: (data: {
+    benchPress: number;
+    squat: number;
+    deadlift: number;
+    overheadPress: number;
+    pullUps: number;
+    pushUps: number;
+    barHang: number;
+    plankHold: number;
+  }) => void;
 };
 
 const StrengthInput: React.FC<Props> = ({ onSubmit }) => {
   const [formData, setFormData] = useState<StrengthFormData>({
-    benchPress: 0,
-    squat: 0,
-    deadlift: 0,
-    overheadPress: 0,
-    pullUps: 0,
-    pushUps: 0,
-    barHang: 0,
-    plankHold: 0,
+    benchPress: '',
+    squat: '',
+    deadlift: '',
+    overheadPress: '',
+    pullUps: '',
+    pushUps: '',
+    barHang: '',
+    plankHold: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: Number(value),
+      [name]: value, // ✅ keep as string until submit
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
+    onSubmit({
+      benchPress: Number(formData.benchPress),
+      squat: Number(formData.squat),
+      deadlift: Number(formData.deadlift),
+      overheadPress: Number(formData.overheadPress),
+      pullUps: Number(formData.pullUps),
+      pushUps: Number(formData.pushUps),
+      barHang: Number(formData.barHang),
+      plankHold: Number(formData.plankHold),
+    });
   };
 
   const fields = [
@@ -62,9 +80,10 @@ const StrengthInput: React.FC<Props> = ({ onSubmit }) => {
             type="number"
             name={field.name}
             id={field.name}
-            value={formData[field.name as keyof StrengthFormData] ?? 0}
+            value={formData[field.name as keyof StrengthFormData]}
             onChange={handleChange}
             min={0}
+            inputMode="numeric"
             className="border border-gray-300 px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
         </div>
