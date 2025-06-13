@@ -46,7 +46,7 @@ const StrengthStatPage: React.FC = () => {
                 <span className="font-bold text-blue-700">{rank}</span>
               </li>
             ))}
-          </ul>
+          </ul> 
 
           {average && (
             <div className="mt-6 text-center">

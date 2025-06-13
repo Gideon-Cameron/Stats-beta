@@ -7,7 +7,7 @@ const rankToScoreMap: Record<Rank, number> = {
   B: 4,
   A: 5,
   S: 6,
-  SS: 7,
+  SS: 7, 
   Mythic: 8,
 };
 

@@ -46,7 +46,7 @@ const RadarChart: React.FC<Props> = ({ data }) => {
             value: values,
             name: 'Your Rank',
           },
-        ],
+        ], 
       },
     ],
   };

@@ -29,10 +29,11 @@ export const strengthRankThresholds: RankThresholds = {
     { min: 56, rank: 'C' },
     { min: 71, rank: 'B' },
     { min: 86, rank: 'A' },
-    { min: 101, rank: 'S' },
+    { min: 100, rank: 'S' },  
     { min: 121, rank: 'SS' },
     { min: 136, rank: 'Mythic' },
   ],
+  
   squat: [
     { min: 0, rank: 'E' },
     { min: 50, rank: 'D' },

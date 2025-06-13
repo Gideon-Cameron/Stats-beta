@@ -15,3 +15,4 @@ export function calculateStrengthRank(test: StrengthTest, value: number): Rank {
 
   return matchedRank;
 }
+ 
