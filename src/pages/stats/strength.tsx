@@ -14,18 +14,17 @@ const StrengthStatPage: React.FC = () => {
 
   const handleSubmit = (data: StrengthFormData) => {
     const ranks: Record<StrengthTest, Rank> = {
-      benchPress: calculateStrengthRank('benchPress', data.benchPress),
-      squat: calculateStrengthRank('squat', data.squat),
-      deadlift: calculateStrengthRank('deadlift', data.deadlift),
-      overheadPress: calculateStrengthRank('overheadPress', data.overheadPress),
-      pullUps: calculateStrengthRank('pullUps', data.pullUps),
-      pushUps: calculateStrengthRank('pushUps', data.pushUps),
-      barHang: calculateStrengthRank('barHang', data.barHang),
-      plankHold: calculateStrengthRank('plankHold', data.plankHold),
+      benchPress: calculateStrengthRank('benchPress', Number(data.benchPress)),
+      squat: calculateStrengthRank('squat', Number(data.squat)),
+      deadlift: calculateStrengthRank('deadlift', Number(data.deadlift)),
+      overheadPress: calculateStrengthRank('overheadPress', Number(data.overheadPress)),
+      pullUps: calculateStrengthRank('pullUps', Number(data.pullUps)),
+      pushUps: calculateStrengthRank('pushUps', Number(data.pushUps)),
+      barHang: calculateStrengthRank('barHang', Number(data.barHang)),
+      plankHold: calculateStrengthRank('plankHold', Number(data.plankHold)),
     };
 
     setResult(ranks);
-
     const averageResult = calculateAverageStrengthRank(Object.values(ranks));
     setAverage(averageResult);
   };
@@ -38,15 +37,17 @@ const StrengthStatPage: React.FC = () => {
       {result && (
         <div className="mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
           <h2 className="text-xl font-semibold mb-4">Your Strength Ranks</h2>
+
           <RadarChart data={result} />
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-y-2 mt-6">
+
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-6">
             {Object.entries(result).map(([test, rank]) => (
-              <li key={test} className="flex justify-between border-b py-1">
-                <span className="capitalize">{test.replace(/([A-Z])/g, ' $1')}</span>
-                <span className="font-bold text-blue-700">{rank}</span>
+              <li key={test} className="flex justify-between items-center border-b py-2">
+                <span className="capitalize whitespace-nowrap">{test.replace(/([A-Z])/g, ' $1')}</span>
+                <span className="font-bold text-blue-700 whitespace-nowrap ml-4">{rank}</span>
               </li>
             ))}
-          </ul> 
+          </ul>
 
           {average && (
             <div className="mt-6 text-center">
