@@ -1,5 +1,14 @@
 import { useState } from 'react';
 
+export type EnduranceNumericForm = {
+    run1_5Mile: number;
+    plankHold: number;
+    pushUps: number;
+    jumpRope: number;
+    wallSit: number;
+    runMaxDistance: number;
+  };
+
 export type EnduranceFormData = {
   run1_5Mile: string;
   plankHold: string;

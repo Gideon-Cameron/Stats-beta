@@ -1,93 +1,64 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import EnduranceInput, { EnduranceNumericForm } from '../../components/statInputs/EnduranceInput';
+import { calculateEnduranceRank } from '../../utils/calculateEnduranceRank';
+import { calculateAverageStrengthRank } from '../../utils/calculateAverageStrength';
+import { EnduranceTest, Rank } from '../../data/enduranceRankThresholds';
+import RadarChart from '../../components/RadarChart';
 
-export type EnduranceFormData = {
-  run1_5Mile: string;
-  plankHold: string;
-  pushUps: string;
-  jumpRope: string;
-  wallSit: string;
-  runMaxDistance: string;
-};
+const EnduranceStatPage: React.FC = () => {
+  const [result, setResult] = useState<Record<EnduranceTest, Rank> | null>(null);
+  const [average, setAverage] = useState<{
+    averageScore: number;
+    globalRank: Rank;
+  } | null>(null);
 
-export type EnduranceNumericForm = {
-  run1_5Mile: number;
-  plankHold: number;
-  pushUps: number;
-  jumpRope: number;
-  wallSit: number;
-  runMaxDistance: number;
-};
+  const handleSubmit = (data: EnduranceNumericForm) => {
+    const ranks: Record<EnduranceTest, Rank> = {
+      run1_5Mile: calculateEnduranceRank('run1_5Mile', data.run1_5Mile),
+      plankHold: calculateEnduranceRank('plankHold', data.plankHold),
+      pushUps: calculateEnduranceRank('pushUps', data.pushUps),
+      jumpRope: calculateEnduranceRank('jumpRope', data.jumpRope),
+      wallSit: calculateEnduranceRank('wallSit', data.wallSit),
+      runMaxDistance: calculateEnduranceRank('runMaxDistance', data.runMaxDistance),
+    };
 
-type Props = {
-  onSubmit: (data: EnduranceNumericForm) => void;
-};
-
-const EnduranceInput: React.FC<Props> = ({ onSubmit }) => {
-  const [formData, setFormData] = useState<EnduranceFormData>({
-    run1_5Mile: '',
-    plankHold: '',
-    pushUps: '',
-    jumpRope: '',
-    wallSit: '',
-    runMaxDistance: '',
-  });
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setResult(ranks);
+    const averageResult = calculateAverageStrengthRank(Object.values(ranks));
+    setAverage(averageResult);
   };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSubmit({
-      run1_5Mile: Number(formData.run1_5Mile),
-      plankHold: Number(formData.plankHold),
-      pushUps: Number(formData.pushUps),
-      jumpRope: Number(formData.jumpRope),
-      wallSit: Number(formData.wallSit),
-      runMaxDistance: Number(formData.runMaxDistance),
-    });
-  };
-
-  const fields = [
-    { label: '1.5-Mile Run (seconds)', name: 'run1_5Mile' },
-    { label: 'Plank Hold (seconds)', name: 'plankHold' },
-    { label: 'Push-Ups (1 min)', name: 'pushUps' },
-    { label: 'Jump Rope (unbroken reps)', name: 'jumpRope' },
-    { label: 'Wall Sit Hold (seconds)', name: 'wallSit' },
-    { label: 'Max Distance Run (km)', name: 'runMaxDistance' },
-  ];
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-md mx-auto p-4">
-      {fields.map((field) => (
-        <div key={field.name} className="flex flex-col">
-          <label htmlFor={field.name} className="mb-1 text-sm font-medium">
-            {field.label}
-          </label>
-          <input
-            type="number"
-            name={field.name}
-            id={field.name}
-            value={formData[field.name as keyof EnduranceFormData]}
-            onChange={handleChange}
-            min={0}
-            inputMode="numeric"
-            className="border border-gray-300 px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+    <div className="py-10 px-6 max-w-3xl mx-auto">
+      <h1 className="text-2xl font-bold mb-6 text-center">Endurance Stat Assessment</h1>
+      <EnduranceInput onSubmit={handleSubmit} />
+
+      {result && (
+        <div className="mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
+          <h2 className="text-xl font-semibold mb-4">Your Endurance Ranks</h2>
+          <RadarChart data={result} />
+          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-6">
+            {Object.entries(result).map(([test, rank]) => (
+              <li key={test} className="flex justify-between items-center border-b py-2">
+                <span className="capitalize whitespace-nowrap">{test.replace(/([A-Z])/g, ' $1').replace(/_/g, ' ')}</span>
+                <span className="font-bold text-blue-700 whitespace-nowrap ml-4">{rank}</span>
+              </li>
+            ))}
+          </ul>
+
+          {average && (
+            <div className="mt-6 text-center">
+              <p className="text-lg">
+                <span className="font-semibold">Average Endurance Score:</span> {average.averageScore}
+              </p>
+              <p className="text-xl mt-1">
+                <span className="font-bold text-blue-800">Global Rank:</span> {average.globalRank}
+              </p>
+            </div>
+          )}
         </div>
-      ))}
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
-      >
-        Submit
-      </button>
-    </form>
+      )}
+    </div>
   );
 };
 
-export default EnduranceInput;
+export default EnduranceStatPage;
