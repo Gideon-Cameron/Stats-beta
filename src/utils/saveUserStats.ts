@@ -8,7 +8,7 @@ import { User } from 'firebase/auth';
  * @param category e.g. "strength", "endurance"
  * @param data full stat object (inputs + score + rank)
  */
-export async function saveUserStats<T extends Record<string, any>>(
+export async function saveUserStats<T extends Record<string, unknown>>(
   user: User,
   category: string,
   data: T
