@@ -1,13 +1,4 @@
-import { useState } from 'react';
-
-export type EnduranceNumericForm = {
-    run1_5Mile: number;
-    plankHold: number;
-    pushUps: number;
-    jumpRope: number;
-    wallSit: number;
-    runMaxDistance: number;
-  };
+import { useEffect, useState } from 'react';
 
 export type EnduranceFormData = {
   run1_5Mile: string;
@@ -19,17 +10,11 @@ export type EnduranceFormData = {
 };
 
 type Props = {
-  onSubmit: (data: {
-    run1_5Mile: number;
-    plankHold: number;
-    pushUps: number;
-    jumpRope: number;
-    wallSit: number;
-    runMaxDistance: number;
-  }) => void;
+  onSubmit: (data: EnduranceFormData) => void;
+  initialData?: EnduranceFormData;
 };
 
-const EnduranceInput: React.FC<Props> = ({ onSubmit }) => {
+const EnduranceInput: React.FC<Props> = ({ onSubmit, initialData }) => {
   const [formData, setFormData] = useState<EnduranceFormData>({
     run1_5Mile: '',
     plankHold: '',
@@ -38,6 +23,12 @@ const EnduranceInput: React.FC<Props> = ({ onSubmit }) => {
     wallSit: '',
     runMaxDistance: '',
   });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -49,14 +40,7 @@ const EnduranceInput: React.FC<Props> = ({ onSubmit }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      run1_5Mile: Number(formData.run1_5Mile),
-      plankHold: Number(formData.plankHold),
-      pushUps: Number(formData.pushUps),
-      jumpRope: Number(formData.jumpRope),
-      wallSit: Number(formData.wallSit),
-      runMaxDistance: Number(formData.runMaxDistance),
-    });
+    onSubmit(formData);
   };
 
   const fields = [
