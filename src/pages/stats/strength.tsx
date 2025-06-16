@@ -1,18 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import StrengthInput, { StrengthFormData } from '../../components/statInputs/StrengthInput';
 import { calculateStrengthRank } from '../../utils/calculateStrengthRank';
 import { calculateAverageStrengthRank } from '../../utils/calculateAverageStrength';
 import { StrengthTest, Rank } from '../../data/strengthRankThresholds';
 import RadarChart from '../../components/RadarChart';
+import { useAuth } from '../../context/AuthContext';
+import { saveUserStats } from '../../utils/saveUserStats';
+import { loadUserStats } from '../../utils/loadUserStats';
 
 const StrengthStatPage: React.FC = () => {
+  const { user } = useAuth();
+  const [formData, setFormData] = useState<StrengthFormData | null>(null);
   const [result, setResult] = useState<Record<StrengthTest, Rank> | null>(null);
   const [average, setAverage] = useState<{
     averageScore: number;
     globalRank: Rank;
   } | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSubmit = (data: StrengthFormData) => {
+  useEffect(() => {
+    if (!user) return;
+    const fetchData = async () => {
+      const saved = await loadUserStats<StrengthFormData & { averageScore: number; globalRank: Rank }>(
+        user,
+        'strength'
+      );
+      if (saved) {
+        const { averageScore, globalRank, ...inputs } = saved;
+        setFormData(inputs);
+        const ranks: Record<StrengthTest, Rank> = {
+          benchPress: calculateStrengthRank('benchPress', Number(inputs.benchPress)),
+          squat: calculateStrengthRank('squat', Number(inputs.squat)),
+          deadlift: calculateStrengthRank('deadlift', Number(inputs.deadlift)),
+          overheadPress: calculateStrengthRank('overheadPress', Number(inputs.overheadPress)),
+          pullUps: calculateStrengthRank('pullUps', Number(inputs.pullUps)),
+          pushUps: calculateStrengthRank('pushUps', Number(inputs.pushUps)),
+          barHang: calculateStrengthRank('barHang', Number(inputs.barHang)),
+          plankHold: calculateStrengthRank('plankHold', Number(inputs.plankHold)),
+        };
+        setResult(ranks);
+        setAverage({ averageScore, globalRank });
+      }
+      setLoading(false);
+    };
+    fetchData();
+  }, [user]);
+
+  const handleSubmit = async (data: StrengthFormData) => {
     const ranks: Record<StrengthTest, Rank> = {
       benchPress: calculateStrengthRank('benchPress', Number(data.benchPress)),
       squat: calculateStrengthRank('squat', Number(data.squat)),
@@ -24,15 +58,26 @@ const StrengthStatPage: React.FC = () => {
       plankHold: calculateStrengthRank('plankHold', Number(data.plankHold)),
     };
 
-    setResult(ranks);
     const averageResult = calculateAverageStrengthRank(Object.values(ranks));
+    setFormData(data);
+    setResult(ranks);
     setAverage(averageResult);
+
+    if (user) {
+      await saveUserStats(user, 'strength', {
+        ...data,
+        averageScore: averageResult.averageScore,
+        globalRank: averageResult.globalRank,
+      });
+    }
   };
+
+  if (loading) return <p className="text-center mt-10">Loading saved data...</p>;
 
   return (
     <div className="py-10 px-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">Strength Stat Assessment</h1>
-      <StrengthInput onSubmit={handleSubmit} />
+      <StrengthInput onSubmit={handleSubmit} initialData={formData ?? undefined} />
 
       {result && (
         <div className="mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
