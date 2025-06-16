@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export type StrengthFormData = {
   benchPress: string;
@@ -12,19 +12,11 @@ export type StrengthFormData = {
 };
 
 type Props = {
-  onSubmit: (data: {
-    benchPress: number;
-    squat: number;
-    deadlift: number;
-    overheadPress: number;
-    pullUps: number;
-    pushUps: number;
-    barHang: number;
-    plankHold: number;
-  }) => void;
+  onSubmit: (data: StrengthFormData) => void;
+  initialData?: StrengthFormData;
 };
 
-const StrengthInput: React.FC<Props> = ({ onSubmit }) => {
+const StrengthInput: React.FC<Props> = ({ onSubmit, initialData }) => {
   const [formData, setFormData] = useState<StrengthFormData>({
     benchPress: '',
     squat: '',
@@ -36,26 +28,24 @@ const StrengthInput: React.FC<Props> = ({ onSubmit }) => {
     plankHold: '',
   });
 
+  // ✅ Load initial data (e.g. from Firestore)
+  useEffect(() => {
+    if (initialData) {
+      setFormData(initialData);
+    }
+  }, [initialData]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value, // ✅ keep as string until submit
+      [name]: value,
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit({
-      benchPress: Number(formData.benchPress),
-      squat: Number(formData.squat),
-      deadlift: Number(formData.deadlift),
-      overheadPress: Number(formData.overheadPress),
-      pullUps: Number(formData.pullUps),
-      pushUps: Number(formData.pushUps),
-      barHang: Number(formData.barHang),
-      plankHold: Number(formData.plankHold),
-    });
+    onSubmit(formData);
   };
 
   const fields = [
