@@ -15,6 +15,6 @@ export function calculateSpeedRank(test: SpeedTest, value: number): Rank {
     }
   }
 
-  // Fallback (should never hit if thresholds cover all values)
+  // Fallback (should never hit if thresholds cover all values);
   return 'E';
 }
