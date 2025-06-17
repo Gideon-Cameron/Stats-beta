@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import StrengthStatPage from './pages/stats/strength';
 import EnduranceStatPage from './pages/stats/endurance';
+import SpeedStatPage from './pages/stats/speed'; // ✅ Import added
 import StatsIndex from './pages/stats/index';
 import LoginPage from './pages/login';
 import { useAuth } from './context/AuthContext';
@@ -27,6 +28,9 @@ const App: React.FC = () => {
               <Link to="/stats/endurance" className="hover:underline">
                 Endurance
               </Link>
+              <Link to="/stats/speed" className="hover:underline"> {/* ✅ Speed nav link */}
+                Speed
+              </Link>
               {user ? (
                 <>
                   <span className="text-sm hidden sm:inline">Hello, {user.email}</span>
@@ -50,6 +54,7 @@ const App: React.FC = () => {
             <Route path="/stats" element={<StatsIndex />} />
             <Route path="/stats/strength" element={<StrengthStatPage />} />
             <Route path="/stats/endurance" element={<EnduranceStatPage />} />
+            <Route path="/stats/speed" element={<SpeedStatPage />} /> {/* ✅ Route added */}
           </Routes>
         </main>
       </div>

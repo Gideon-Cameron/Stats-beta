@@ -15,8 +15,8 @@ const statCategories = [
   {
     name: 'Speed',
     path: '/stats/speed',
-    description: 'Coming soon...',
-    disabled: true,
+    description: 'Test your sprinting, reflexes, and agility across 5 key metrics.',
+    disabled: false, // ✅ Enabled
   },
   {
     name: 'Flexibility',
