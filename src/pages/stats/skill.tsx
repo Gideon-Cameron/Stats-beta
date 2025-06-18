@@ -5,7 +5,8 @@ import { calculateSkillRank } from '../../utils/calculateSkillRank';
 import { calculateAverageStrengthRank } from '../../utils/calculateAverageStrength';
 import RadarChart from '../../components/RadarChart';
 import { useAuth } from '../../context/AuthContext';
-import { getUserStats, saveUserStats } from '../../lib/firestore';
+import { loadUserStats } from '../../utils/loadUserStats';
+import { saveUserStats } from '../../utils/saveUserStats';
 
 const SkillStatPage: React.FC = () => {
   const { user } = useAuth();
@@ -13,6 +14,31 @@ const SkillStatPage: React.FC = () => {
   const [result, setResult] = useState<Record<SkillTest, Rank> | null>(null);
   const [average, setAverage] = useState<{ averageScore: number; globalRank: Rank } | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user) {
+        const saved = await loadUserStats<SkillFormData & { averageScore: number; globalRank: Rank }>(user, 'skill');
+        if (saved) {
+          const { averageScore, globalRank, ...inputs } = saved;
+          setFormData(inputs);
+          const ranks: Record<SkillTest, Rank> = {
+            pushSkill: calculateSkillRank('pushSkill', inputs.pushSkill),
+            pullSkill: calculateSkillRank('pullSkill', inputs.pullSkill),
+            handstandSkill: calculateSkillRank('handstandSkill', inputs.handstandSkill),
+            coreSkill: calculateSkillRank('coreSkill', inputs.coreSkill),
+            legSkill: calculateSkillRank('legSkill', inputs.legSkill),
+            leverSkill: calculateSkillRank('leverSkill', inputs.leverSkill),
+          };
+          setResult(ranks);
+          setAverage({ averageScore, globalRank });
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [user]);
 
   const handleSubmit = async (data: SkillFormData) => {
     const ranks: Record<SkillTest, Rank> = {
@@ -24,45 +50,28 @@ const SkillStatPage: React.FC = () => {
       leverSkill: calculateSkillRank('leverSkill', data.leverSkill),
     };
 
+    const averageResult = calculateAverageStrengthRank(Object.values(ranks));
     setFormData(data);
     setResult(ranks);
-    setAverage(calculateAverageStrengthRank(Object.values(ranks)));
+    setAverage(averageResult);
 
     if (user) {
-      await saveUserStats('skill', user.uid, { input: data, ranks });
+      await saveUserStats(user, 'skill', {
+        ...data,
+        averageScore: averageResult.averageScore,
+        globalRank: averageResult.globalRank,
+      });
     }
   };
 
-  useEffect(() => {
-    const fetchStats = async () => {
-      if (user) {
-        const saved = await getUserStats<{
-          input: SkillFormData;
-          ranks: Record<SkillTest, Rank>;
-        }>('skill', user.uid);
-  
-        if (saved?.input && saved?.ranks) {
-          setFormData(saved.input);
-          setResult(saved.ranks);
-          setAverage(calculateAverageStrengthRank(Object.values(saved.ranks)));
-        }
-      }
-      setLoading(false);
-    };
-  
-    fetchStats();
-  }, [user]);
-  
+  if (loading) {
+    return <p className="text-center mt-10">Loading saved data...</p>;
+  }
 
   return (
     <div className="py-10 px-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">Skill Stat Assessment</h1>
-
-      {loading ? (
-        <p className="text-center">Loading saved data...</p>
-      ) : (
-        <SkillInput onSubmit={handleSubmit} initialData={formData ?? undefined} />
-      )}
+      <SkillInput onSubmit={handleSubmit} initialData={formData ?? undefined} />
 
       {result && (
         <div className="mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
@@ -73,9 +82,7 @@ const SkillStatPage: React.FC = () => {
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-6">
             {Object.entries(result).map(([test, rank]) => (
               <li key={test} className="flex justify-between items-center border-b py-2">
-                <span className="capitalize whitespace-nowrap">
-                  {test.replace(/([A-Z])/g, ' $1').replace('Skill', '')}
-                </span>
+                <span className="capitalize whitespace-nowrap">{test.replace(/([A-Z])/g, ' $1')}</span>
                 <span className="font-bold text-blue-700 whitespace-nowrap ml-4">{rank}</span>
               </li>
             ))}

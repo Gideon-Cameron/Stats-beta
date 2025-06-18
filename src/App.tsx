@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import StrengthStatPage from './pages/stats/strength';
 import EnduranceStatPage from './pages/stats/endurance';
-import SpeedStatPage from './pages/stats/speed'; // ✅ Import added
+import SpeedStatPage from './pages/stats/speed';
+import SkillStatPage from './pages/stats/skill'; // ✅ Import added
 import StatsIndex from './pages/stats/index';
 import LoginPage from './pages/login';
 import { useAuth } from './context/AuthContext';
@@ -19,29 +20,18 @@ const App: React.FC = () => {
               <Link to="/">Stat Tracker</Link>
             </h1>
             <div className="space-x-4 flex items-center">
-              <Link to="/stats" className="hover:underline">
-                All Stats
-              </Link>
-              <Link to="/stats/strength" className="hover:underline">
-                Strength
-              </Link>
-              <Link to="/stats/endurance" className="hover:underline">
-                Endurance
-              </Link>
-              <Link to="/stats/speed" className="hover:underline"> {/* ✅ Speed nav link */}
-                Speed
-              </Link>
+              <Link to="/stats" className="hover:underline">All Stats</Link>
+              <Link to="/stats/strength" className="hover:underline">Strength</Link>
+              <Link to="/stats/endurance" className="hover:underline">Endurance</Link>
+              <Link to="/stats/speed" className="hover:underline">Speed</Link>
+              <Link to="/stats/skill" className="hover:underline">Skill</Link> {/* ✅ New link */}
               {user ? (
                 <>
                   <span className="text-sm hidden sm:inline">Hello, {user.email}</span>
-                  <button onClick={logout} className="text-sm underline ml-2 hover:text-red-300">
-                    Logout
-                  </button>
+                  <button onClick={logout} className="text-sm underline ml-2 hover:text-red-300">Logout</button>
                 </>
               ) : (
-                <Link to="/login" className="hover:underline">
-                  Login
-                </Link>
+                <Link to="/login" className="hover:underline">Login</Link>
               )}
             </div>
           </div>
@@ -54,7 +44,8 @@ const App: React.FC = () => {
             <Route path="/stats" element={<StatsIndex />} />
             <Route path="/stats/strength" element={<StrengthStatPage />} />
             <Route path="/stats/endurance" element={<EnduranceStatPage />} />
-            <Route path="/stats/speed" element={<SpeedStatPage />} /> {/* ✅ Route added */}
+            <Route path="/stats/speed" element={<SpeedStatPage />} />
+            <Route path="/stats/skill" element={<SkillStatPage />} /> {/* ✅ New route */}
           </Routes>
         </main>
       </div>

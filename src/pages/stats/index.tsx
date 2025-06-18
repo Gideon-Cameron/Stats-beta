@@ -16,17 +16,16 @@ const statCategories = [
     name: 'Speed',
     path: '/stats/speed',
     description: 'Test your sprinting, reflexes, and agility across 5 key metrics.',
-    disabled: false, // ✅ Enabled
-  },
-  {
-    name: 'Flexibility',
-    path: '/stats/flexibility',
-    description: 'Coming soon...',
-    disabled: true,
   },
   {
     name: 'Skill',
     path: '/stats/skill',
+    description: 'Evaluate your control, balance, and bodyweight skills with advanced calisthenics moves.',
+    disabled: false, // ✅ Skill now enabled
+  },
+  {
+    name: 'Flexibility',
+    path: '/stats/flexibility',
     description: 'Coming soon...',
     disabled: true,
   },
