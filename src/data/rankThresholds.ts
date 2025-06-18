@@ -1,4 +1,12 @@
-
+export type Rank =
+  | 'E'
+  | 'D'
+  | 'C'
+  | 'B'
+  | 'A'
+  | 'S'
+  | 'SS'
+  | 'Mythic';
 
 export type FlexibilityTest =
   | 'frontSplit'
