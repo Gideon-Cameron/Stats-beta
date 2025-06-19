@@ -2,7 +2,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { User } from 'firebase/auth';
 import { GlobalStatSummary, StatCategory } from '../types/StatCategory';
-import { Rank } from '../data/flexibilityRankThresholds'; // Keep this if Rank is not centralized
+import { Rank } from '../types/Rank'; 
 
 const statCategories: StatCategory[] = [
   'strength',
