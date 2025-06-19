@@ -1,3 +1,5 @@
+import { Rank } from '../types/Rank';
+
 export type SpeedTest =
   | 'sprint100m'
   | 'run1km'
@@ -5,15 +7,6 @@ export type SpeedTest =
   | 'rulerDrop'
   | 'reactionTime';
 
-export type Rank =
-  | 'E'
-  | 'D'
-  | 'C'
-  | 'B'
-  | 'A'
-  | 'S'
-  | 'SS'
-  | 'Mythic';
 
 type Threshold = { min: number; rank: Rank };
 
