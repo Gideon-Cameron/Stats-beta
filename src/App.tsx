@@ -6,7 +6,7 @@ import SpeedStatPage from './pages/stats/speed';
 import SkillStatPage from './pages/stats/skill';
 import FlexibilityStatPage from './pages/stats/flexibility'; // ✅ NEW IMPORT
 import StatsIndex from './pages/stats/index';
-import LoginPage from './pages/login';
+import LoginPage from './pages/Login';
 import { useAuth } from './context/AuthContext';
 
 const App: React.FC = () => {

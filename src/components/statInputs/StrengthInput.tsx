@@ -5,7 +5,7 @@ export type StrengthFormData = {
   squat: string;
   deadlift: string;
   overheadPress: string;
-  pullUps: string;
+  pullUps: string; 
   pushUps: string;
   barHang: string;
   plankHold: string;
