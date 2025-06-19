@@ -17,7 +17,7 @@ export type FlexibilityTest =
   | 'pancakeFold'
   | 'bridgeDepth';
 
-type Threshold = {
+export type Threshold = {
   min: number;
   rank: Rank;
 };

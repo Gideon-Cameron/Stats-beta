@@ -21,13 +21,13 @@ const statCategories = [
     name: 'Skill',
     path: '/stats/skill',
     description: 'Evaluate your control, balance, and bodyweight skills with advanced calisthenics moves.',
-    disabled: false, // ✅ Skill now enabled
+    disabled: false,
   },
   {
     name: 'Flexibility',
     path: '/stats/flexibility',
-    description: 'Coming soon...',
-    disabled: true,
+    description: 'Measure your mobility and joint range across 7 self-testable movements.',
+    disabled: false, // ✅ Enabled
   },
   {
     name: 'Health',

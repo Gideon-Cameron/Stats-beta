@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import StrengthStatPage from './pages/stats/strength';
 import EnduranceStatPage from './pages/stats/endurance';
 import SpeedStatPage from './pages/stats/speed';
-import SkillStatPage from './pages/stats/skill'; // ✅ Import added
+import SkillStatPage from './pages/stats/skill';
+import FlexibilityStatPage from './pages/stats/flexibility'; // ✅ NEW IMPORT
 import StatsIndex from './pages/stats/index';
 import LoginPage from './pages/login';
 import { useAuth } from './context/AuthContext';
@@ -24,7 +25,8 @@ const App: React.FC = () => {
               <Link to="/stats/strength" className="hover:underline">Strength</Link>
               <Link to="/stats/endurance" className="hover:underline">Endurance</Link>
               <Link to="/stats/speed" className="hover:underline">Speed</Link>
-              <Link to="/stats/skill" className="hover:underline">Skill</Link> {/* ✅ New link */}
+              <Link to="/stats/skill" className="hover:underline">Skill</Link>
+              <Link to="/stats/flexibility" className="hover:underline">Flexibility</Link> {/* ✅ NEW LINK */}
               {user ? (
                 <>
                   <span className="text-sm hidden sm:inline">Hello, {user.email}</span>
@@ -45,7 +47,8 @@ const App: React.FC = () => {
             <Route path="/stats/strength" element={<StrengthStatPage />} />
             <Route path="/stats/endurance" element={<EnduranceStatPage />} />
             <Route path="/stats/speed" element={<SpeedStatPage />} />
-            <Route path="/stats/skill" element={<SkillStatPage />} /> {/* ✅ New route */}
+            <Route path="/stats/skill" element={<SkillStatPage />} />
+            <Route path="/stats/flexibility" element={<FlexibilityStatPage />} /> {/* ✅ NEW ROUTE */}
           </Routes>
         </main>
       </div>
