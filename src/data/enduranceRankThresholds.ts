@@ -1,12 +1,4 @@
-export type Rank =
-  | 'E'
-  | 'D'
-  | 'C'
-  | 'B'
-  | 'A'
-  | 'S'
-  | 'SS'
-  | 'Mythic';
+import { Rank } from '../types/Rank';
 
 export type EnduranceTest =
   | 'run1_5Mile'       // time (min)
