@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { loadGlobalRanks } from '../utils/loadGlobalRanks';
 import { StatCategory } from '../types/StatCategory';
 import { useAuth } from '../context/AuthContext';
-import { Rank } from '../data/flexibilityRankThresholds';
+import { Rank } from '../types/Rank';
 import RadarChart from '../components/RadarChart';
 
 const Home: React.FC = () => {
