@@ -4,10 +4,11 @@ import StrengthStatPage from './pages/stats/strength';
 import EnduranceStatPage from './pages/stats/endurance';
 import SpeedStatPage from './pages/stats/speed';
 import SkillStatPage from './pages/stats/skill';
-import FlexibilityStatPage from './pages/stats/flexibility'; // ✅ NEW IMPORT
+import FlexibilityStatPage from './pages/stats/flexibility';
 import StatsIndex from './pages/stats/index';
 import LoginPage from './pages/Login';
 import { useAuth } from './context/AuthContext';
+import Home from './pages/home'; // ✅ NEW HOME IMPORT
 
 const App: React.FC = () => {
   const { user, logout } = useAuth();
@@ -26,7 +27,7 @@ const App: React.FC = () => {
               <Link to="/stats/endurance" className="hover:underline">Endurance</Link>
               <Link to="/stats/speed" className="hover:underline">Speed</Link>
               <Link to="/stats/skill" className="hover:underline">Skill</Link>
-              <Link to="/stats/flexibility" className="hover:underline">Flexibility</Link> {/* ✅ NEW LINK */}
+              <Link to="/stats/flexibility" className="hover:underline">Flexibility</Link>
               {user ? (
                 <>
                   <span className="text-sm hidden sm:inline">Hello, {user.email}</span>
@@ -41,32 +42,19 @@ const App: React.FC = () => {
 
         <main className="py-6 px-4">
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home />} /> {/* ✅ Dashboard as Homepage */}
             <Route path="/login" element={<LoginPage />} />
             <Route path="/stats" element={<StatsIndex />} />
             <Route path="/stats/strength" element={<StrengthStatPage />} />
             <Route path="/stats/endurance" element={<EnduranceStatPage />} />
             <Route path="/stats/speed" element={<SpeedStatPage />} />
             <Route path="/stats/skill" element={<SkillStatPage />} />
-            <Route path="/stats/flexibility" element={<FlexibilityStatPage />} /> {/* ✅ NEW ROUTE */}
+            <Route path="/stats/flexibility" element={<FlexibilityStatPage />} />
           </Routes>
         </main>
       </div>
     </Router>
   );
 };
-
-const Home: React.FC = () => (
-  <div className="max-w-2xl mx-auto text-center mt-10">
-    <h2 className="text-3xl font-bold mb-4">Welcome to Stat Tracker</h2>
-    <p className="text-gray-700">Measure your fitness across global standards.</p>
-    <Link
-      to="/stats"
-      className="inline-block mt-6 px-6 py-3 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-    >
-      View All Stat Categories
-    </Link>
-  </div>
-);
 
 export default App;
