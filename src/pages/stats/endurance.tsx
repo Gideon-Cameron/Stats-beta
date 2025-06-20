@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import EnduranceInput, { EnduranceFormData } from '../../components/statInputs/EnduranceInput';
 import { calculateEnduranceRank } from '../../utils/calculateEnduranceRank';
 import { calculateAverageStrengthRank } from '../../utils/calculateAverageStrength';
-import { EnduranceTest, } from '../../data/enduranceRankThresholds';
+import { EnduranceTest } from '../../data/enduranceRankThresholds';
 import { Rank } from '../../types/Rank';
 import RadarChart from '../../components/RadarChart';
 import { useAuth } from '../../context/AuthContext';

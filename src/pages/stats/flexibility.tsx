@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import FlexibilityInput, { FlexibilityFormData } from '../../components/statInputs/FlexibilityInput';
 import { calculateFlexibilityRank } from '../../utils/calculateFlexibilityRank';
 import { calculateAverageFlexibilityRank } from '../../utils/calculateAverageFlexibility';
-import { FlexibilityTest, } from '../../data/flexibilityRankThresholds';
+import { FlexibilityTest } from '../../data/flexibilityRankThresholds';
 import { Rank } from '../../types/Rank';
 import RadarChart from '../../components/RadarChart';
 import { useAuth } from '../../context/AuthContext';
