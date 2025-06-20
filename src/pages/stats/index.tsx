@@ -27,13 +27,7 @@ const statCategories = [
     name: 'Flexibility',
     path: '/stats/flexibility',
     description: 'Measure your mobility and joint range across 7 self-testable movements.',
-    disabled: false, // ✅ Enabled
-  },
-  {
-    name: 'Health',
-    path: '/stats/health',
-    description: 'Coming soon...',
-    disabled: true,
+    disabled: false,
   },
 ];
 
@@ -41,7 +35,7 @@ const StatsIndex: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-center mb-10">Select a Stat Category</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
         {statCategories.map(({ name, path, description, disabled }) => (
           <div
             key={name}
