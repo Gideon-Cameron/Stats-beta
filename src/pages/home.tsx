@@ -15,12 +15,14 @@ const Home: React.FC = () => {
 
     const fetchData = async () => {
       const summaries = await loadGlobalRanks(user);
-
+      console.log('[Home] summaries:', summaries); // ✅ Add this
+    
       const map = summaries.reduce((acc, { category, globalRank }) => {
         acc[category] = globalRank;
         return acc;
       }, {} as Record<StatCategory, Rank>);
-
+    
+      console.log('[Home] rankMap:', map); // ✅ Add this too
       setRankMap(map);
       setLoading(false);
     };

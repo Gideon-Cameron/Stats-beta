@@ -19,6 +19,7 @@ export async function loadGlobalRanks(user: User): Promise<GlobalStatSummary[]> 
     const data = snapshot.data();
 
     const globalRank = (data?.globalRank ?? 'E') as Rank;
+    console.log(`[loadGlobalRanks] ${category} →`, globalRank); // ✅ Debug line
 
     return {
       category,
@@ -28,3 +29,4 @@ export async function loadGlobalRanks(user: User): Promise<GlobalStatSummary[]> 
 
   return Promise.all(promises);
 }
+

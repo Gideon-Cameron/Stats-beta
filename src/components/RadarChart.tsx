@@ -6,6 +6,7 @@ type Props<T extends string> = {
 };
 
 function RadarChart<T extends string>({ data }: Props<T>) {
+  console.log('[RadarChart] data:', data);
   const indicators = Object.keys(data).map((key) => ({
     name: key.replace(/([A-Z])/g, ' $1').replace(/_/g, ' '),
     max: 8,
@@ -23,7 +24,7 @@ function RadarChart<T extends string>({ data }: Props<T>) {
   };
 
   const values = Object.values(data).map((rank) => rankScale[rank as Rank]);
-
+  console.log('[RadarChart] scaled values:', values);
   const option = {
     tooltip: { trigger: 'item' },
     radar: { indicator: indicators, radius: '70%', splitNumber: 4 },
