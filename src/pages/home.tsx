@@ -4,26 +4,34 @@ import { StatCategory } from '../types/StatCategory';
 import { useAuth } from '../context/AuthContext';
 import { Rank } from '../types/Rank';
 import RadarChart from '../components/RadarChart';
+import { calculateAverageRank } from '../utils/calculateAverageGeneric'; // ✅ NEW
 
 const Home: React.FC = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [rankMap, setRankMap] = useState<Record<StatCategory, Rank> | null>(null);
+  const [combinedRank, setCombinedRank] = useState<Rank | null>(null); // ✅ NEW
 
   useEffect(() => {
     if (!user) return;
 
     const fetchData = async () => {
       const summaries = await loadGlobalRanks(user);
-      console.log('[Home] summaries:', summaries); // ✅ Add this
-    
+      console.log('[Home] summaries:', summaries);
+
       const map = summaries.reduce((acc, { category, globalRank }) => {
         acc[category] = globalRank;
         return acc;
       }, {} as Record<StatCategory, Rank>);
-    
-      console.log('[Home] rankMap:', map); // ✅ Add this too
+
+      console.log('[Home] rankMap:', map);
       setRankMap(map);
+
+      // ✅ Calculate combined rank
+      const allRanks = Object.values(map);
+      const { globalRank } = calculateAverageRank(allRanks);
+      setCombinedRank(globalRank);
+
       setLoading(false);
     };
 
@@ -51,6 +59,14 @@ const Home: React.FC = () => {
               </li>
             ))}
           </ul>
+
+          {combinedRank && (
+            <div className="mt-6 text-center">
+              <p className="text-lg font-medium">
+                <span className="text-blue-800 font-bold">Overall Global Rank:</span> {combinedRank}
+              </p>
+            </div>
+          )}
         </div>
       ) : (
         <p className="text-center text-gray-600">No stats submitted yet.</p>
