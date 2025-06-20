@@ -2,7 +2,7 @@ import { getDoc, doc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import { User } from 'firebase/auth';
 import { GlobalStatSummary, StatCategory } from '../types/StatCategory';
-import { Rank } from '../types/Rank'; 
+import { Rank } from '../types/Rank'; // centralized Rank type
 
 const statCategories: StatCategory[] = [
   'strength',
@@ -13,20 +13,27 @@ const statCategories: StatCategory[] = [
 ];
 
 export async function loadGlobalRanks(user: User): Promise<GlobalStatSummary[]> {
-  const promises = statCategories.map(async (category): Promise<GlobalStatSummary> => {
-    const ref = doc(db, 'users', user.uid, 'stats', category);
-    const snapshot = await getDoc(ref);
-    const data = snapshot.data();
+  const userRef = doc(db, 'users', user.uid);
+  const snapshot = await getDoc(userRef);
 
-    const globalRank = (data?.globalRank ?? 'E') as Rank;
-    console.log(`[loadGlobalRanks] ${category} →`, globalRank); // ✅ Debug line
+  if (!snapshot.exists()) {
+    console.warn('[loadGlobalRanks] User doc not found');
+    return statCategories.map((category) => ({
+      category,
+      globalRank: 'E',
+    }));
+  }
+
+  const userData = snapshot.data();
+
+  return statCategories.map((category) => {
+    const statEntry = userData?.[category];
+    const rank = statEntry?.globalRank as Rank;
+    console.log(`[loadGlobalRanks] ${category} →`, rank || 'E');
 
     return {
       category,
-      globalRank,
+      globalRank: rank || 'E',
     };
   });
-
-  return Promise.all(promises);
 }
-
