@@ -1,4 +1,4 @@
-import { Rank } from '../data/flexibilityRankThresholds'; // You can replace this with a shared location if needed
+import { Rank } from '../types/Rank';
 
 // All supported stat categories
 export type StatCategory =
