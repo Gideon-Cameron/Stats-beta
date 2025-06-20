@@ -1,4 +1,5 @@
-import { strengthRankThresholds, StrengthTest, Rank } from '../data/strengthRankThresholds';
+import { strengthRankThresholds, StrengthTest, } from '../data/strengthRankThresholds';
+import { Rank } from '../types/Rank'
 
 export function calculateStrengthRank(test: StrengthTest, value: number): Rank {
   const thresholds = strengthRankThresholds[test];
