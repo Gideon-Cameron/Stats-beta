@@ -1,4 +1,5 @@
-import { speedRankThresholds, SpeedTest, Rank } from '../data/speedRankThresholds';
+import { speedRankThresholds, SpeedTest,} from '../data/speedRankThresholds';
+import { Rank } from '../types/Rank'
 
 /**
  * Calculates the rank for a given speed test based on the user's performance.
