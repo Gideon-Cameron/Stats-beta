@@ -1,4 +1,4 @@
-import { Rank } from '../data/flexibilityRankThresholds';
+import { Rank } from '../types/Rank';
 
 const rankToScoreMap: Record<Rank, number> = {
   E: 1,
