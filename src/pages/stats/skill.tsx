@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import SkillInput, { SkillFormData } from '../../components/statInputs/SkillInput';
-import { SkillTest, Rank } from '../../data/skillRankThresholds';
+import { SkillTest } from '../../data/skillRankThresholds';
+import { Rank } from '../../types/Rank';
 import { calculateSkillRank } from '../../utils/calculateSkillRank';
 import { calculateAverageStrengthRank } from '../../utils/calculateAverageStrength';
 import RadarChart from '../../components/RadarChart';
