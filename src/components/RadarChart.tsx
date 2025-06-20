@@ -1,5 +1,5 @@
 import ReactECharts from 'echarts-for-react';
-import { Rank } from '../data/strengthRankThresholds'; // or a shared location
+import { Rank } from '../types/Rank'; 
 
 type Props<T extends string> = {
   data: Record<T, Rank>;
