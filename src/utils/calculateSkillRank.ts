@@ -1,4 +1,5 @@
-import { skillRankThresholds, SkillTest, Rank } from '../data/skillRankThresholds';
+import { skillRankThresholds, SkillTest, } from '../data/skillRankThresholds';
+import { Rank } from '../types/Rank'
 
 export function calculateSkillRank(test: SkillTest, value: string): Rank {
   const thresholds = skillRankThresholds[test];
