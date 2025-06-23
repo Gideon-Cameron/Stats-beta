@@ -21,13 +21,11 @@ const statCategories = [
     name: 'Skill',
     path: '/stats/skill',
     description: 'Evaluate your control, balance, and bodyweight skills with advanced calisthenics moves.',
-    disabled: false,
   },
   {
     name: 'Flexibility',
     path: '/stats/flexibility',
     description: 'Measure your mobility and joint range across 7 self-testable movements.',
-    disabled: false,
   },
 ];
 
@@ -35,28 +33,18 @@ const StatsIndex: React.FC = () => {
   return (
     <div className="max-w-5xl mx-auto px-4 py-12">
       <h1 className="text-3xl font-bold text-center mb-10">Select a Stat Category</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 justify-center">
-        {statCategories.map(({ name, path, description, disabled }) => (
-          <div
+
+      {/* 💡 Flexbox layout instead of grid */}
+      <div className="flex flex-wrap justify-center gap-6">
+        {statCategories.map(({ name, path, description }) => (
+          <Link
             key={name}
-            className={`p-6 rounded-lg border shadow-sm transition-all ${
-              disabled
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-white hover:shadow-md'
-            }`}
+            to={path}
+            className="w-full sm:w-[280px] bg-white p-6 rounded-lg border shadow-sm hover:shadow-md transition"
           >
-            {disabled ? (
-              <div>
-                <h2 className="text-xl font-semibold mb-2">{name}</h2>
-                <p className="text-sm">{description}</p>
-              </div>
-            ) : (
-              <Link to={path} className="block">
-                <h2 className="text-xl font-semibold mb-2 text-blue-700 hover:underline">{name}</h2>
-                <p className="text-sm text-gray-700">{description}</p>
-              </Link>
-            )}
-          </div>
+            <h2 className="text-xl font-semibold mb-2 text-blue-700 hover:underline">{name}</h2>
+            <p className="text-sm text-gray-700">{description}</p>
+          </Link>
         ))}
       </div>
     </div>
