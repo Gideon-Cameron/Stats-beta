@@ -8,42 +8,53 @@ import RadarChart from '../../components/RadarChart';
 import { useAuth } from '../../context/AuthContext';
 import { saveUserStats } from '../../utils/saveUserStats';
 import { loadUserStats } from '../../utils/loadUserStats';
+import { loadStatHistory } from '../../utils/loadStatHistory';
+
+type Snapshot = {
+  data: StrengthFormData & { averageScore: number; globalRank: Rank };
+  timestamp: number;
+};
 
 const StrengthStatPage: React.FC = () => {
   const { user } = useAuth();
   const [formData, setFormData] = useState<StrengthFormData | null>(null);
-  const [result, setResult] = useState<Record<StrengthTest, Rank> | null>(null);
-  const [average, setAverage] = useState<{
-    averageScore: number;
-    globalRank: Rank;
-  } | null>(null);
+  const [history, setHistory] = useState<Snapshot[]>([]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!user) return;
+
     const fetchData = async () => {
-      const saved = await loadUserStats<StrengthFormData & { averageScore: number; globalRank: Rank }>(
-        user,
-        'strength'
-      );
-      if (saved) {
-        const { averageScore, globalRank, ...inputs } = saved;
+      const [current, past] = await Promise.all([
+        loadUserStats<StrengthFormData & { averageScore: number; globalRank: Rank }>(user, 'strength'),
+        loadStatHistory<StrengthFormData & { averageScore: number; globalRank: Rank }>(user, 'strength'),
+      ]);
+
+      const snapshots: Snapshot[] = [];
+
+      if (current) {
+        const { ...inputs } = current;
         setFormData(inputs);
-        const ranks: Record<StrengthTest, Rank> = {
-          benchPress: calculateStrengthRank('benchPress', Number(inputs.benchPress)),
-          squat: calculateStrengthRank('squat', Number(inputs.squat)),
-          deadlift: calculateStrengthRank('deadlift', Number(inputs.deadlift)),
-          overheadPress: calculateStrengthRank('overheadPress', Number(inputs.overheadPress)),
-          pullUps: calculateStrengthRank('pullUps', Number(inputs.pullUps)),
-          pushUps: calculateStrengthRank('pushUps', Number(inputs.pushUps)),
-          barHang: calculateStrengthRank('barHang', Number(inputs.barHang)),
-          plankHold: calculateStrengthRank('plankHold', Number(inputs.plankHold)),
-        };
-        setResult(ranks);
-        setAverage({ averageScore, globalRank });
+
+        snapshots.push({
+          data: current,
+          timestamp: Date.now(), // "Now"
+        });
       }
+
+      past.forEach((entry) => {
+        snapshots.push({
+          data: entry,
+          timestamp: entry.timestamp as unknown as number,
+        });
+      });
+
+      setHistory(snapshots);
+      setSelectedIndex(0);
       setLoading(false);
     };
+
     fetchData();
   }, [user]);
 
@@ -61,8 +72,6 @@ const StrengthStatPage: React.FC = () => {
 
     const averageResult = calculateAverageStrengthRank(Object.values(ranks));
     setFormData(data);
-    setResult(ranks);
-    setAverage(averageResult);
 
     if (user) {
       await saveUserStats(user, 'strength', {
@@ -75,36 +84,74 @@ const StrengthStatPage: React.FC = () => {
 
   if (loading) return <p className="text-center mt-10">Loading saved data...</p>;
 
+  const current = history[selectedIndex];
+
   return (
     <div className="py-10 px-6 max-w-3xl mx-auto">
       <h1 className="text-2xl font-bold mb-6 text-center">Strength Stat Assessment</h1>
       <StrengthInput onSubmit={handleSubmit} initialData={formData ?? undefined} />
 
-      {result && (
+      {current && (
         <div className="mt-10 bg-gray-100 p-6 rounded-lg shadow-md">
-          <h2 className="text-xl font-semibold mb-4">Your Strength Ranks</h2>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Snapshot</h2>
+            <div className="text-sm text-gray-500">
+              {selectedIndex > 0 && (
+                <button
+                  onClick={() => setSelectedIndex((i) => Math.min(history.length - 1, i + 1))}
+                  className="mr-3 text-blue-600 hover:underline"
+                >
+                  ◀ Previous
+                </button>
+              )}
+              <span>{new Date(current.timestamp).toLocaleDateString()}</span>
+              {selectedIndex < history.length - 1 && (
+                <button
+                  onClick={() => setSelectedIndex((i) => Math.max(0, i - 1))}
+                  className="ml-3 text-blue-600 hover:underline"
+                >
+                  Next ▶
+                </button>
+              )}
+            </div>
+          </div>
 
-          <RadarChart data={result} />
+          <RadarChart
+            data={{
+              benchPress: calculateStrengthRank('benchPress', Number(current.data.benchPress)),
+              squat: calculateStrengthRank('squat', Number(current.data.squat)),
+              deadlift: calculateStrengthRank('deadlift', Number(current.data.deadlift)),
+              overheadPress: calculateStrengthRank('overheadPress', Number(current.data.overheadPress)),
+              pullUps: calculateStrengthRank('pullUps', Number(current.data.pullUps)),
+              pushUps: calculateStrengthRank('pushUps', Number(current.data.pushUps)),
+              barHang: calculateStrengthRank('barHang', Number(current.data.barHang)),
+              plankHold: calculateStrengthRank('plankHold', Number(current.data.plankHold)),
+            }}
+          />
 
           <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3 mt-6">
-            {Object.entries(result).map(([test, rank]) => (
-              <li key={test} className="flex justify-between items-center border-b py-2">
-                <span className="capitalize whitespace-nowrap">{test.replace(/([A-Z])/g, ' $1')}</span>
-                <span className="font-bold text-blue-700 whitespace-nowrap ml-4">{rank}</span>
-              </li>
-            ))}
+            {Object.entries(current.data).map(([key, val]) =>
+              ['averageScore', 'globalRank'].includes(key) ? null : (
+                <li key={key} className="flex justify-between items-center border-b py-2">
+                  <span className="capitalize whitespace-nowrap">
+                    {key.replace(/([A-Z])/g, ' $1')}
+                  </span>
+                  <span className="font-bold text-blue-700 whitespace-nowrap ml-4">{val}</span>
+                </li>
+              )
+            )}
           </ul>
 
-          {average && (
-            <div className="mt-6 text-center">
-              <p className="text-lg">
-                <span className="font-semibold">Average Strength Score:</span> {average.averageScore}
-              </p>
-              <p className="text-xl mt-1">
-                <span className="font-bold text-blue-800">Global Rank:</span> {average.globalRank}
-              </p>
-            </div>
-          )}
+          <div className="mt-6 text-center">
+            <p className="text-lg">
+              <span className="font-semibold">Average Strength Score:</span>{' '}
+              {current.data.averageScore}
+            </p>
+            <p className="text-xl mt-1">
+              <span className="font-bold text-blue-800">Global Rank:</span>{' '}
+              {current.data.globalRank}
+            </p>
+          </div>
         </div>
       )}
     </div>
